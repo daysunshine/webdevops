@@ -1,0 +1,615 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block external %}
+    <link rel="stylesheet" href={% static "css/bootstrap-table.min.css" %}>
+    <style>
+     /*更改表头的颜色*/
+        #mytable > thead th {
+            padding: 0;
+            margin: 0;
+            background-color: rgba(35, 167, 247, 0.44);
+        }
+     /*更改鼠标悬停颜色*/
+        #mytable tbody > tr:hover {
+            background-color: rgba(82, 203, 82, 0.47);
+            color: #000000;
+        }
+        .modal-body input {
+            color: #000000;
+        }
+        .modal-body select {
+            color: #000000;
+        }
+        {#.modal-dialog {#}
+        {#    margin-top: 300px;#}
+        {#\}#}
+        {#.modal-content {#}
+        {#    width: 300px;#}
+        {#\}#}
+    </style>
+{% endblock external %}
+
+{% block sidebar %}
+      <aside>
+          <div id="sidebar"  class="nav-collapse ">
+              <!-- sidebar menu start-->
+              <ul class="sidebar-menu">
+                  <li class="sub-menu" id="click">
+                      <a class="" href={% url "app:index" %}>
+                          <i class="icon-dashboard"></i>
+                          <span>仪表盘</span>
+                      </a>
+                  </li>
+                  <li class="sub-menu active" id="click">
+                      <a href="javascript:;" class="">
+                          <i class="icon-book"></i>
+                          <span>主机管理</span>
+                          <span class="arrow"></span>
+                      </a>
+                      <ul class="sub">
+                          <li id="sub-click" class="active"><a class="" target="_self" href="{% url "app:hostlist" %}">主机信息列表</a></li>
+                          <li id="sub-click"><a class="" target="_self" href="webuser/buttons.html">批量管理</a></li>
+
+                      </ul>
+                  </li>
+                  <li class="sub-menu" id="click">
+                      <a href="javascript:;" class="">
+                          <i class="icon-cogs"></i>
+                          <span>资产管理</span>
+                          <span class="arrow"></span>
+                      </a>
+                      <ul class="sub">
+                          <li id="sub-click"><a class="" href="webuser/grids.html">资产列表</a></li>
+                          <li id="sub-click"><a class="" href="webuser/calendar.html">添加主机</a></li>
+                          <li id="sub-click"><a class="" href="webuser/charts.html">图标</a></li>
+                      </ul>
+                  </li>
+                  <li class="sub-menu" id="click">
+                      <a href="javascript:;" class="">
+                          <i class="icon-tasks"></i>
+                          <span>系统监控</span>
+                          <span class="arrow"></span>
+                      </a>
+                      <ul class="sub">
+                          <li id="sub-click"><a class="" href="webuser/form_component.html">表单组件</a></li>
+                          <li id="sub-click"><a class="" href="webuser/form_wizard.html">表单</a></li>
+                          <li id="sub-click"><a class="" href="webuser/form_validation.html">表单</a></li>
+                      </ul>
+                  </li>
+                  <li class="sub-menu" id="click">
+                      <a href="javascript:;" class="">
+                          <i class="icon-th"></i>
+                          <span>权限管理</span>
+                          <span class="arrow"></span>
+                      </a>
+                      <ul class="sub">
+                          <li id="sub-click"><a class="" href="webuser/basic_table.html">基础表格</a></li>
+                          <li id="sub-click"><a class="" href="webuser/dynamic_table.html">基础表格</a></li>
+                      </ul>
+                  </li>
+                  <li>
+                      <a class="" href="webuser/inbox.html">
+                          <i class="icon-envelope"></i>
+                          <span>邮件 </span>
+                          <span class="label label-danger pull-right mail-info">2</span>
+                      </a>
+                  </li>
+                  <li class="sub-menu">
+                      <a href="javascript:;" class="">
+                          <i class="icon-glass"></i>
+                          <span>其他</span>
+                          <span class="arrow"></span>
+                      </a>
+                      <ul class="sub">
+                          <li><a class="" href="webuser/blank.html">其他</a></li>
+                          <li><a class="" href="webuser/profile.html">其他</a></li>
+                          <li><a class="" href="webuser/invoice.html">其他</a></li>
+                          <li><a class="" href="webuser/404.html">404 其他</a></li>
+                          <li><a class="" href="webuser/500.html">500 其他</a></li>
+                      </ul>
+                  </li>
+              </ul>
+              <!-- sidebar menu end-->
+          </div>
+      </aside>
+{% endblock sidebar %}
+
+{% block main-content %}
+{#    {% csrf_token %}#}
+    <section id="main-content">
+          <section class="wrapper">
+              <!-- page start-->
+              <div class="row">
+                  <div class="col-lg-12">
+                      <section class="panel panel-info">
+                          <header class="panel-heading" style="text-indent: 560px">
+                              查询条件
+                          </header>
+                          <div class="panel-body form-group">
+                              <label class="col-sm-2 control-label" style="text-align: right; margin-top:7px">主机名:</label>
+                              <div class="col-sm-2">
+                                <input type="text" class="form-control" name="Name" id="search_name"/>
+                              </div>
+                              <label class="col-sm-1 control-label" style="text-align: right; margin-top:7px">IP:</label>
+                              <div class="col-sm-2">
+                                  <input type="text" class="form-control" name="Name" id="search_ip"/>
+                              </div>
+                              <div class="col-sm-1 col-sm-offset-1">
+                                  <button class="btn btn-primary" id="search_btn">查询</button>
+                              </div>
+                          </div>
+                      </section>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div id="mytoolbar" class="btn-group pull-right" style="margin-right: 5px">
+                          <button id="btn_edit" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal_create" style="border-radius: 5px">
+                              <span class="glyphicon glyphicon-pencil" aria-hidden="true" ></span>新增
+                          </button>
+                          <button id="btn_delete" type="button" class="btn btn-primary" style="border-radius: 5px;margin-left: 5px">
+                              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>批量删除
+                          </button>
+                      </div>
+                      <table class="table table-bordered" id="mytable"></table>
+                  </div>
+              </div>
+              <!-- page end-->
+          </section>
+      </section>
+    <!--模态框 update host start -->
+    <div class="modal fade" id="myModal_update" tabindex="-1" role="dialog" aria-labelledby="myModal_update_Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                    </button>
+                    <h4 class="modal-title" id="myModal_update_Label">
+                    编辑主机
+                    </h4>
+                </div>
+                {# 模态框body #}
+                <div class="modal-body" style="height: 100%;">
+                    <form id="update-form" action="#" method="post" class="form-horizontal" role="form" style="color: #000000">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-3 control-label">ID</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" readonly="readonly" name="pk_id" id="pk_id" required="required"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="firstname" class="col-sm-3 control-label">主机名</label>
+                            <div class="col-sm-7">
+                {#            <select data-placeholder="选择项目..." class="form-control" name="project_name" id="project_name" required="required">#}
+                {#                <option value="">请选择项目</option>#}
+                {#                {% for key,value in project_data.items %}#}
+                {#                <option value="{{ value }}" hassubinfo="true">{{ key }}</option>#}
+                {#                {% endfor %}#}
+                {#            </select>#}
+                                <input type="text" class="form-control"  name="u_hostname" id="u_hostname" required="required" placeholder="请输入主机名"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-3 control-label">IP地址</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control"  name="u_address" id="u_address" required="required" placeholder="请输入主机IP地址"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="firstname" class="col-sm-3 control-label">位置</label>
+                            <div class="col-sm-7">
+                            <select data-placeholder="选择主机位置" class="form-control" name="u_location" id="u_location" required="required">
+                                <option value="">请选择主机位置</option>
+                {#                {% for key,value in project_data.items %}#}
+                                <option value="专网" hassubinfo="true">专网</option>
+                                <option value="政务外网" hassubinfo="true">政务外网</option>
+                {#                {% endfor %}#}
+                            </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="firstname" class="col-sm-3 control-label">类型</label>
+                            <div class="col-sm-7">
+                            <select data-placeholder="选择主机位置" class="form-control" name="u_host_type" id="u_host_type" required="required">
+                                <option value="">请选择主类型</option>
+                {#                {% for key,value in project_data.items %}#}
+                                <option value="虚拟机" hassubinfo="true">虚拟机</option>
+                                <option value="物理机" hassubinfo="true">物理机</option>
+                {#                {% endfor %}#}
+                            </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-3 control-label">内存(G)</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control"  name="u_memory" id="u_memory" required="required" placeholder="请输入主机内存"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-3 control-label">CPU型号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control"  name="u_cpu_v" id="u_cpu_v" required="required" placeholder="请输入主机CPU型号" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-3 control-label">CPU线程数(个)</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control"  name="u_cpu_num" id="u_cpu_num" required="required" placeholder="请输入主机CPU线程数"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="firstname" class="col-sm-3 control-label">操作系统</label>
+                            <div class="col-sm-7">
+                            <select data-placeholder="选择主机位置" class="form-control" name="u_os" id="u_os" required="required">
+                                <option value="">请选择操作系统</option>
+                                <option value="Linux" hassubinfo="true">Linux</option>
+                                <option value="Windows" hassubinfo="true">Windows</option>
+                                <option value="Others" hassubinfo="true">Others</option>
+                            </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="firstname" class="col-sm-3 control-label">运行状态</label>
+                            <div class="col-sm-7">
+                            <select data-placeholder="选择主机位置" class="form-control" name="u_status" id="u_status" required="required">
+                                <option value="">请选择运行状态</option>
+                                <option value="运行" hassubinfo="true">运行</option>
+                                <option value="关机" hassubinfo="true">关机</option>
+                                <option value="弃用" hassubinfo="true">弃用</option>
+                            </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                {#模态框底部#}
+                <div class="modal-footer">
+                    <input id="update_button" type="button" data-dissmiss="modal" class="btn btn-primary"value="提交">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal update host -->
+    <!--模态框 create host start -->
+    <div class="modal fade" id="myModal_create" tabindex="-1" role="dialog" aria-labelledby="myModal_create_Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                    </button>
+                    <h4 class="modal-title" id="myModal_create_Label">
+                    添加主机
+                    </h4>
+                </div>
+                {# modal create body #}
+                <div class="modal-body" style="height: 100%;">
+                    <form id="add-form" action="#" method="post" class="form-horizontal" role="form" style="color: #000000">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="firstname" class="col-sm-3 control-label">主机名</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control"  name="c_hostname" id="c_hostname" value="" required="required" placeholder="请输入主机名"/>
+                                <div class="c_hostname_error" style="height: 3px;display:none;font-size: 5%;color: red;"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-3 control-label">IP地址</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control"  name="c_address" id="c_address" value="" required="required" placeholder="请输入主机IP地址"/>
+                                <div class="c_address_error" style="height: 3px;display:none;font-size: 5%;color: red;"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="firstname" class="col-sm-3 control-label">位置</label>
+                            <div class="col-sm-7">
+                                <select data-placeholder="选择主机位置" class="form-control" name="c_location" id="c_location"  required="required">
+                                    <option value="" selected="selected">请选择主机位置</option>
+                    {#                {% for key,value in project_data.items %}#}
+                                    <option value="专网" hassubinfo="true">专网</option>
+                                    <option value="政务外网" hassubinfo="true">政务外网</option>
+                    {#                {% endfor %}#}
+                                </select>
+                                <div class="c_location_error" style="height: 3px;display:none;font-size: 5%;color: red;"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="firstname" class="col-sm-3 control-label">类型</label>
+                            <div class="col-sm-7">
+                                <select data-placeholder="选择主机位置" class="form-control" name="c_host_type" id="c_host_type" required="required">
+                                    <option value="" selected="selected">请选择主类型</option>
+                    {#                {% for key,value in project_data.items %}#}
+                                    <option value="虚拟机" hassubinfo="true">虚拟机</option>
+                                    <option value="物理机" hassubinfo="true">物理机</option>
+                    {#                {% endfor %}#}
+                                </select>
+                                <div class="c_host_type_error" style="height: 3px;display:none;font-size: 5%;color: red;"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-3 control-label">内存(G)</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control"  name="c_memory" id="c_memory" value="" required="required" placeholder="请输入主机内存"/>
+                                <div class="c_memory_error" style="height: 3px;display:none;font-size: 5%;color: red;"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-3 control-label">CPU型号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control"  name="c_cpu_v" id="c_cpu_v" value="" required="required" placeholder="请输入主机CPU型号"/>
+                                <div class="c_cpu_v_error" style="height: 3px;display:none;font-size: 5%;color: red;"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-3 control-label">CPU线程数(个)</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control"  name="c_cpu_num" id="c_cpu_num" value="" required="required" placeholder="请输入主机CPU线程数"/>
+                                <div class="c_cpu_num_error" style="height: 3px;display:none;font-size: 5%;color: red;"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="firstname" class="col-sm-3 control-label">操作系统</label>
+                            <div class="col-sm-7">
+                                <select data-placeholder="选择主机位置" class="form-control" name="c_os" id="c_os" required="required">
+                                    <option value="" selected="selected">请选择操作系统</option>
+                                    <option value="Linux" hassubinfo="true">Linux</option>
+                                    <option value="Windows" hassubinfo="true">Windows</option>
+                                    <option value="Others" hassubinfo="true">Others</option>
+                                </select>
+                                <div class="c_os_error" style="height: 3px;display:none;font-size: 5%;color: red;"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="firstname" class="col-sm-3 control-label">运行状态</label>
+                            <div class="col-sm-7">
+                                <select data-placeholder="选择主机位置" class="form-control" name="c_status" id="c_status" required="required">
+                                    <option value="" selected="selected">请选择运行状态</option>
+                                    <option value="运行" hassubinfo="true">运行</option>
+                                    <option value="关机" hassubinfo="true">关机</option>
+                                    <option value="弃用" hassubinfo="true">弃用</option>
+                                </select>
+                                <div class="c_status_error" style="height: 3px;display:none;font-size: 5%;color: red;"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                {#模态框底部#}
+                <div class="modal-footer">
+                    <input id="add_button" type="button" data-dissmiss="modal" class="btn btn-primary" value="提交">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal create host -->
+{% endblock main-content %}
+
+{% block js %}
+
+    <script src="{%static "js/bootstrap-table.min.js" %}"></script>
+    <script src="{%static "js/bootstrap-table-editable.js" %}"></script>
+    <script src="{%static "js/bootstrap-table-zh-CN.js" %}"></script>
+{#    <script src="{%static "js/bootstrap-table-export.min.js" %}"></script>#}
+{#    <script src="{%static "js/tableExport.min.js" %}"></script>#}
+    <script src="{% static "js/common-scripts.js" %}"></script>
+    <script src="{% static "js/hostlist.js" %}"></script>
+    <script type="text/javascript">
+        function initTable() {
+            $('#mytable').bootstrapTable('destroy').bootstrapTable({
+                method: "get",  //使用get请求到服务器获取数据
+                contentType: "application/x-www-form-urlencoded",//必须要有！！！！
+                {#contentType: "application/json",//必须要有！！！！#}
+                dataType: "json",
+                cache: false,
+                url:'{% url 'app:handle_hostlist' %}', // 请求获取数据的url
+                toolbar: '#mytoolbar',//指定工具栏
+                striped: true,  //表格显示条纹
+                dataField: "rows",
+                uniqueId :"id", //设定唯一键，可以使用$('#mytable').bootstrapTable('getRowByUniqueId',id) 获取id行的值
+                pagination: true, //启动分页
+                pageSize: 10,  //每页显示的记录数
+                pageNumber:1, //当前第几页
+                pageList: [10, 20, 50, 100,'all'],  //记录数可选列表
+{#              search: true,  //是否启用查询#}
+{#              showColumns: true,  //显示下拉框勾选要显示的列#}
+{#              showRefresh: true,  //显示刷新按钮#}
+                sidePagination: "server", //server:服务器端分页|client：前端分页
+                //设置为undefined可以获取pageNumber，pageSize，searchText，sortName，sortOrder
+                //设置为limit可以获取limit, offset, search, sort, order
+                queryParamsType : "undefined",
+                clickToSelect: true,//是否启用点击选中行
+                toolbarAlign:'left',//工具栏对齐方式
+                buttonsAlign:'right',//按钮对齐方式showColumns这个按钮的对齐位置
+                showRefresh: true,
+                showColumns:true,
+                showHeader:true,
+                {#showExport: true,  //是否显示导出按钮#}
+                {#exportDataType: "all",              //basic', 'all', 'selected'.#}
+                {#exportTypes:['excel'],  //导出文件类型#}
+            {#    exportDataType:'all',//basic', 'all', 'selected'.#}
+            {#    showExport: true,  //是否显示导出按钮#}
+            {#    exportTypes:['csv'],  //导出文件类型#}
+            {#    icons:{refresh: "glyphicon-repeat", columns: "glyphicon-list",export: 'glyphicon-export'},#}
+                columns:[
+                    {
+                        title:'全选',
+                        field:'select',
+                        //复选框
+                        checkbox:true,
+                        width:25,
+                        align:'center',
+                        valign:'middle',
+
+                    },
+                    {
+                        title:'主机名',
+                        field:'h_name',
+                        sortable:true,
+                    },
+                    {
+                        title:'IP',
+                        field:'h_ip',
+                        sortable:true
+                    },
+                    {
+                        title:'位置',
+                        field:'h_location',
+                        sortable:true
+                    },
+                    {
+                        title:'类型',
+                        field:'h_virorphy',
+                        sortable:true
+                    },
+                    {
+                        title:'内存(G)    ',
+                        field:'h_mem',
+                        sortable:true
+                    },
+                    {
+                        title:'CPU型号',
+                        field:'h_cpu',
+                        sortable:true
+                    },
+                    {
+                        title:'CPU线程数',
+                        field:'h_cpus',
+                        sortable:true
+                    },
+                    {
+                        title:'操作系统',
+                        field:'h_os',
+                        sortable:true
+                    },
+                    {
+                        title:'运行状态',
+                        field:'h_status',
+                        sortable:true
+                    },
+                    {
+                        title:'操作',
+                        field:'id',
+                        align:'center',
+                        // 操作列，添加动作按钮 <a href="#" onclick="edit(\''+ row.id + '\')" style="color: #ffffff"></a>
+                        formatter:function(value,row,index){
+                            return [
+                                '<button id="btn_edit" type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal_update" style="border-radius: 5px"',
+                                'onclick="editInfo(\''+ row.id + '\')">编辑</button>',
+                                {#'>编辑</button>',#}
+                                '<button id="btn_del" type="button" class="btn btn-danger btn-sm" style="border-radius: 5px"',
+                                'onclick="delete_host(\''+ row.id +'\');" style="color: #ffffff">删除</button>',
+                            ].join('')
+                        }
+                    },
+                    {#:function(row,index) {#}
+                    {#    if (row == 0) {#}
+                    {#    return {css: {"background-color": "#3cc8ff"}}#}
+                    {#    }#}
+                    {##}
+
+                ],
+                queryParams: function queryParams(params) {   //设置查询参数,请求服务器设定的参数
+                    var param = {
+                        //加上csrf
+                        {#csrfmiddlewaretoken :$("input[name='csrfmiddlewaretoken']").val(),#}
+                        pageNumber : params.pageNumber,
+                        pageSize: params.pageSize,
+                    };
+                    return param;
+                },
+                rowStyle:function(row,index) {
+                    if (row == 0) {
+                        return {css: {"background-color": "#3cc8ff"}}
+                    }
+                    if (index % 2 == 0) {
+                        return {css: {"background-color": "rgba(227,255,203,0.36)"}}
+                    } else {
+                        return {css: {"background-color": "rgba(252,255,119,0.16)"}}
+                    }
+                },
+
+            });
+        }
+        // set data for modal
+        function editInfo(id) {
+            //获取表格中的一行数据
+            row_data = $('#mytable').bootstrapTable('getRowByUniqueId',id)
+            //向模态框中传值
+            $('#myModal_update_Label').text('主机信息更改')
+            $('#pk_id').val(id);
+            $('#u_hostname').val(row_data['h_name']);
+            $('#u_address').val(row_data['h_ip']);
+            $('#u_location').val(row_data['h_location']);
+            $('#u_host_type').val(row_data['h_virorphy']);
+            $('#u_memory').val(row_data['h_mem']);
+            $('#u_cpu_v').val(row_data['h_cpu']);
+            $('#u_cpu_num').val(row_data['h_cpus']);
+            $('#u_os').val(row_data['h_os']);
+            $('#u_status').val(row_data['h_status']);
+        }
+        // delete single host
+        function delete_host(id){ // 暂时单个删除，需要新增加支持批量删除，接收[]
+            {#console.log(id)#}
+            bootbox.confirm({
+                title:"删除",
+                message:"<div style='color:red'>确定删除吗?</div>",
+                callback:function (result) {
+                    if(result){
+                        var ids = new Array();
+                        ids.push(id);
+                        csrf = $("input[name='csrfmiddlewaretoken']").val();
+                        $.ajax({
+                            type:"POST",
+                            dataType:"json",
+                            url:"{% url 'app:delhost' %}",
+                            data:"ids="+ids+','+'&'+"csrfmiddlewaretoken="+csrf, // 增加","保证后端得到的是元组tuple
+                            success: function(e){
+                                {#console.log(e)#}
+                                $('#mytable').bootstrapTable("refresh")
+                                var dialog = bootbox.dialog({
+                                    message: "删除成功",
+                                    size: 'small',
+                                    closeButton: false,
+                                    onEscape: true,
+                                    callback:function () {}
+                                });
+                                dialog.init(function(){
+                                    setTimeout(function(){
+                                        dialog.modal('hide');
+                                    }, 600);
+                                });
+                            },
+                        });
+                    };
+                }, <!-- callback end-->
+            }); <!-- confirm end-->
+        }
+
+        $(document).ready(function () {
+            //调用函数，初始化表格
+            initTable();
+            //当点击查询按钮的时候执行
+            $("#search_btn").bind("click", initTable);
+        });
+
+    </script>
+
+{% endblock js %}
