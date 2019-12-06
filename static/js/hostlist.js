@@ -323,7 +323,6 @@ $(function () {
                }
                check(1);
             });
-
         });
 
     $('#btn_delete').click(function () {
