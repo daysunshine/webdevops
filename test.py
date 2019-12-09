@@ -26,3 +26,11 @@ a.pop('1')
 
 print(len(a))
 
+import  unittest
+
+
+class Testworld(unittest.TestCase):
+    def test_world(self):
+        str = world('111')
+        self.assertEqual()
+
