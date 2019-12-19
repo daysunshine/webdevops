@@ -47,7 +47,7 @@
                     <li class="dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <img alt="" src="{% static "img/user.png" %}">
-                            <span class="username">Admin</span>
+                            <span class="username">{{ uname }}</span>
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu ">
@@ -78,7 +78,7 @@
     <!-- js placed at the end of the document so the pages load faster -->
     <script src={% static "js/jquery.js" %}></script>
     <script src={% static "js/jquery-1.12.4.min.js" %}></script>
-    <script src={% static "js/jquery.nicescroll.js" %}></script>
+{#    <script src={% static "js/jquery.nicescroll.js" %}></script>#}
     <script src={% static "js/jquery.scrollTo.min.js" %}></script>
     <script src={% static "js/bootstrap.min.js" %}></script>
 

@@ -741,10 +741,15 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
 
 }
 
-.state-overview .value h1, .state-overview .value p  {
+.state-overview .value h1 {
     margin: 0;
     padding: 0;
     color: #c6cad6;
+}
+.state-overview .symbol p {
+    margin-bottom: 0px;
+    color:#000000;
+    font-size: 15px;
 }
 
 .state-overview .value h1 {
@@ -765,7 +770,7 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
 
 .state-overview .value {
     width: 58%;
-    padding-top: 21px;
+    padding-top: 40px;
 }
 
 .state-overview .terques {

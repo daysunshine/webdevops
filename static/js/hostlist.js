@@ -335,7 +335,7 @@ $(function () {
             return;
         }else {
             var ids = new Array();// 声明一个数组
-            $(rows).each(function() {// 通过获得别选中的来进行遍历
+            $(rows).each(function() {// 通过获得被选中的来进行遍历
                 ids.push(this.id);// cid为获得到的整条数据中的一列
             });
             delHost(ids)

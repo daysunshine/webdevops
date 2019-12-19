@@ -3,15 +3,20 @@ from django.core.paginator import Paginator
 from django.db import transaction
 from django.http import JsonResponse
 from .models import *
-import json
+from auth.auth import check_login
 
+@check_login
 def index(request):
-    return render(request,'webuser/index.html')
+    context = {'uname':request.session.get('uname')}
+    return render(request,'webuser/index.html',context)
 
+@check_login
 def hostlist(request):
-    return render(request,'webuser/hostlist.html')
+    context = {'uname': request.session.get('uname')}
+    return render(request,'webuser/hostlist.html',context)
     # return 'webuser/hostlist.html'
 
+@check_login
 def handle_hostlist(request):
     if request.method == 'GET':
         # limit = int(request.GET.get('limit',14))
@@ -33,6 +38,7 @@ def handle_hostlist(request):
         ret = {'total':count,'rows':[record for record in pages]}
         return JsonResponse(ret)
 
+@check_login
 def updatehost(request):
     if request.method == "POST":
         payload = request.POST
@@ -70,6 +76,7 @@ def updatehost(request):
                 return JsonResponse({'error': 1, 'message': 'system error!!!'})
             return JsonResponse({'error': 0, 'message': 'Update Success'})
 
+@check_login
 def delhost(request):
     if request.method == 'POST':
         payload = request.POST
@@ -86,6 +93,7 @@ def delhost(request):
         return JsonResponse({'error': 1, 'message': 'None id !!!'})
     return JsonResponse({'error': 1, 'message': 'Only Support POST Method!!!'})
 
+@check_login
 def addhost(request):
     if request.method == "POST":
         payload = request.POST
@@ -123,3 +131,8 @@ def addhost(request):
             return JsonResponse({'error': 0, 'message': 'Add Success'})
         else:
             return JsonResponse({'error': 1, 'message': 'The information is not complete !!!'})
+
+
+
+
+

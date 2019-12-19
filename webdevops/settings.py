@@ -46,7 +46,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -145,4 +145,11 @@ CACHES = {
 # # 将session缓存在Redis中
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
-# SESSION_COOKIE_NAME = 'devops'
+SESSION_COOKIE_NAME = "sessionid"                       # session 的 cookie 保存在浏览器上时的 key，即：sessionid＝随机字符串（默认）
+SESSION_COOKIE_PATH = "/"                               # session 的 cookie 保存的路径（默认）
+SESSION_COOKIE_DOMAIN = None                             # session 的 cookie 保存的域名（默认）
+SESSION_COOKIE_SECURE = False                            # 是否用 https 传输 cookie（默认）
+SESSION_COOKIE_HTTPONLY = True                           # 是否 session 的 cookie 只支持 http 传输（默认）
+# SESSION_COOKIE_AGE = 1209600                             # session 的 cookie 失效日期（2 个星期）（默认）
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True                  # 是否关闭浏览器的时候让 session 过期（默认）
+SESSION_SAVE_EVERY_REQUEST = False                       # 是否每次请求都保存 session，默认修改之后才保存（默认）

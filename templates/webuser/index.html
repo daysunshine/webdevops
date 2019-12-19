@@ -101,10 +101,10 @@
                       <section class="panel">
                           <div class="symbol terques">
                               <i class="glyphicon glyphicon-modal-window"></i>
-                          </div>
-                          <div class="value">
-                              <h1>86</h1>
                               <p>主机数</p>
+                          </div>
+                          <div id="all_host" class="value">
+                              <h1>86</h1>
                           </div>
                       </section>
                   </div>
@@ -112,10 +112,10 @@
                       <section class="panel">
                           <div class="symbol green">
                               <i class="glyphicon glyphicon-ok"></i>
+                              <p>运 行</p>
                           </div>
                           <div class="value">
                               <h1>78</h1>
-                              <p>运行</p>
                           </div>
                       </section>
                   </div>
@@ -123,10 +123,10 @@
                       <section class="panel">
                           <div class="symbol red">
                               <i class="glyphicon glyphicon-off"></i>
+                              <p>关 机</p>
                           </div>
                           <div class="value">
                               <h1>8</h1>
-                              <p>关机</p>
                           </div>
                       </section>
                   </div>
@@ -134,10 +134,10 @@
                       <section class="panel">
                           <div class="symbol blue">
                               <i class="icon-bar-chart"></i>
+                              <p>监 控</p>
                           </div>
                           <div class="value">
                               <h1>70</h1>
-                              <p>监控</p>
                           </div>
                       </section>
                   </div>
@@ -720,6 +720,7 @@
 
     <!--common script for all pages-->
     <script src="{% static "js/common-scripts.js" %}"></script>
+    <script src="{% static "js/index.js" %}"></script>
 
     <!--script for this page-->
     <script src={% static "js/sparkline-chart.js" %}></script>

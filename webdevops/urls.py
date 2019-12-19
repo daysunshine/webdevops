@@ -21,4 +21,5 @@ urlpatterns = [
     path(r'user/',include(('webuser.urls','user'),namespace='user')),
     path(r'webserver/',include('webserver.urls')),
     path(r'app/',include(('app.urls','app'),namespace='app')),
+    path(r'monitor/',include(('monitor.urls','monitor'),namespace='monitor')),
 ]
